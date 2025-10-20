@@ -5,6 +5,22 @@ import { answerQuestion, resetQuiz } from './store';
 import QuizDetails from './QuizDetails';
 
 const Quiz = () => {
+  const { questions, currentQuestionIndex, score } = useSelector((state) => state.quiz);
+  const currentQuestion = questions[currentQuestionIndex];
+
+  const dispatch = useDispatch();
+  const handleAnswer = (answer) => {
+    dispatch(answerQuestion(answer));
+  };
+
+  if (currentQuestionIndex >= questions.length) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Quiz Completed!</Text>
+        <Text style={styles.scoreText}>Your Score: {score}/{questions.length}</Text>
+      </View>
+    );
+  }
 
   return (
     <ImageBackground 
@@ -12,10 +28,13 @@ const Quiz = () => {
       style={styles.background}
     >
       <ScrollView contentContainerStyle={styles.container}>
-    <QuizDetails/>
+        <QuizDetails/>
         <View style={styles.questionContainer}>
-          <Text style={styles.questionText}></Text>
+          <Text style={styles.questionText}>{currentQuestion.question}</Text>
           <View style={styles.buttonContainer}>
+            {currentQuestion.options.map((option) => (
+              <Button key={option} title={option} onPress={() => handleAnswer(option)} color="#FF4081" />
+            ))}
           </View>
         </View>
       </ScrollView>
